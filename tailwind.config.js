@@ -5,13 +5,28 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      bgred: 'rgba(217, 85, 80, 0.7)',
+      card: 'rgba(255, 255, 255, 0.1)',
+      btn: 'rgba(255, 255, 255, 0.3)',
+      textwhite: 'rgba(255, 255, 255, 0.9)',
+      btnactive: 'rgba(0, 0, 0, 0.15)',
+      bigbtn: 'rgba(255, 255, 255, 0.3)',
+    },
     screens: {
       sm: '640px',
       md: '768px',
       lg: '1024px',
       xl: '1280px',
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+        ds: ['DS-Digital', 'sans-serif'],
+      },
+    },
+    plugins: [],
   },
-  plugins: [],
 };

@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 
 export default function Timer() {
-  const [time, setTime] = useState('25:00');
-  const [buttonText, setButtonText] = useState('Start');
+  const [time, setTime] = useState();
+  const [buttonText, setButtonText] = useState();
   const [isRunning, setIsRunning] = useState(false);
   const [buttonState, setButtonState] = useState('pomodoro');
   const [timeID, setTimeID] = useState(null);
 
   const buttonStyle =
-    'rounded mt-5 text-black p-1 border-2 border-gray-500 space-x-5 hover:bg-gray-400 click:text-slate-50';
+    'rounded mt-5 text-black px-3 py-1 bg-btn space-x-5 active:bg-btnactive font-inter';
 
   function pomo(e) {
     e.preventDefault();
     if (isRunning) {
-      alert('Please stop the timer before changing the state');
+      alert('Please STOP the timer before changing the state');
       return;
     }
     setTime('25:00');
@@ -23,7 +23,7 @@ export default function Timer() {
   function shortBreak(e) {
     e.preventDefault();
     if (isRunning) {
-      alert('Please stop the timer before changing the state');
+      alert('Please STOP the timer before changing the state');
       return;
     }
     setTime('05:00');
@@ -33,7 +33,7 @@ export default function Timer() {
   function longBreak(e) {
     e.preventDefault();
     if (isRunning) {
-      alert('Please stop the timer before changing the state');
+      alert('Please STOP the timer before changing the state');
       return;
     }
     setTime('15:00');
@@ -46,34 +46,53 @@ export default function Timer() {
   }
 
   useEffect(() => {
-    document.title = `${time} - ${buttonState}`;
-  }, [time, buttonState]);
+    let text = 'Pomodoro';
+    if (time === '25:00') {
+      text = 'Time to focus💪';
+    } else if (time === '05:00') {
+      text = 'Time to relax💤';
+    } else if (time === '15:00') {
+      text = 'Time to relax💤';
+    }
+    document.title = `${time} - ${text}`;
+  }, [time]);
 
   useEffect(() => {
     if (isRunning) {
-      setButtonText('Stop');
-      const [minutes, seconds] = time.split(':');
-      const newTime = new Date(0, 0, 0, 0, minutes, seconds);
+      setButtonText('STOP');
+      let [minutes, seconds] = time.split(':');
+      seconds = Number(seconds);
+      minutes = Number(minutes);
 
       const id = setInterval(() => {
-        setTimeID(id);
-        if (newTime.getSeconds() === 0 && newTime.getMinutes() === 0) {
-          console.log('clearInterval', timeID);
-          clearInterval(timeID);
+        if (seconds === 0) {
+          seconds = 59;
+          if (minutes !== 0) {
+            minutes--;
+          } else {
+            setIsRunning(false);
+            return;
+          }
+        } else {
+          seconds -= 1;
         }
-        newTime.setSeconds(newTime.getSeconds() - 1);
-        setTime(
-          `${newTime.getMinutes() < 10 ? '0' : ''}${newTime.getMinutes()}:${
-            newTime.getSeconds() < 10 ? '0' : ''
-          }${newTime.getSeconds()}`
-        );
+        let textSeconds = seconds;
+        let textMinutes = minutes;
+        if (seconds < 10) {
+          textSeconds = `0${seconds}`;
+        }
+        if (minutes < 10) {
+          textMinutes = `0${minutes}`;
+        }
+        setTime(`${textMinutes}:${textSeconds}`);
       }, 1000);
+      setTimeID(id);
     }
     if (!isRunning) {
-      setButtonText('Start');
+      setButtonText('START');
       if (timeID !== null) {
-        console.log('clearInterval', timeID);
         clearInterval(timeID);
+        setTimeID(null);
       }
       if (buttonState === 'pomodoro') {
         setTime('25:00');
@@ -83,14 +102,15 @@ export default function Timer() {
         setTime('15:00');
       }
     }
-  }, [buttonState, isRunning, time, timeID]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRunning]);
 
   return (
     <div
       className="container mx-auto my-10 flex w-1/3 min-w-max flex-col	
-      items-center justify-center rounded-lg bg-gray-100 opacity-75"
+      items-center justify-center rounded-lg bg-card shadow-lg"
     >
-      <div className="flex flex-row items-center justify-center space-x-5 font-mono">
+      <div className="mx-5 flex flex-row items-center justify-center space-x-5">
         <button className={buttonStyle} onClick={(e) => pomo(e)}>
           Pomodoro
         </button>
@@ -101,14 +121,11 @@ export default function Timer() {
           Long Break
         </button>
       </div>
-      <p
-        id="time"
-        className="mt-10 rounded-lg border-2 border-gray-900 p-2 text-4xl"
-      >
+      <p className="border-gray-900 mt-10 rounded-lg py-3 px-6 font-ds text-6xl">
         {time}
       </p>
       <button
-        className="mt-10 mb-5 rounded bg-white py-3 px-6 font-bold text-red-600 hover:text-red-800"
+        className="text-red-600 mt-10 mb-10 rounded bg-bigbtn py-3 px-6 font-inter font-bold text-textwhite shadow-inner active:bg-btnactive"
         onClick={(e) => buttonClick(e)}
       >
         {buttonText}
