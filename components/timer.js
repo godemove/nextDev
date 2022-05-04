@@ -48,6 +48,7 @@ export default function Timer() {
   useEffect(() => {
     document.title = `${time} - ${buttonState}`;
   }, [time, buttonState]);
+
   useEffect(() => {
     if (isRunning) {
       setButtonText('Stop');
@@ -82,7 +83,7 @@ export default function Timer() {
         setTime('15:00');
       }
     }
-  }, [isRunning]);
+  }, [buttonState, isRunning, time, timeID]);
 
   return (
     <div

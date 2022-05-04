@@ -1,6 +1,5 @@
 import Image from 'next/image';
 
-import profilePic from '../images/profile.jpg';
 import iconPic from '../images/icon-white.png';
 
 export default function Nav() {
