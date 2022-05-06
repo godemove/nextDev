@@ -16,7 +16,13 @@ export default function Timer() {
       alert('Please STOP the timer before changing the state');
       return;
     }
-    setTime('25:00');
+    if (time === undefined) {
+      setTime('25:00');
+    } else if (time === '25:00') {
+      setTime('50:00');
+    } else {
+      setTime('25:00');
+    }
     setButtonState('pomodoro');
   }
 
@@ -47,11 +53,9 @@ export default function Timer() {
 
   useEffect(() => {
     let text = 'Pomodoro';
-    if (time === '25:00') {
+    if (time === '25:00' || time === '50:00') {
       text = 'Time to focus💪';
-    } else if (time === '05:00') {
-      text = 'Time to relax💤';
-    } else if (time === '15:00') {
+    } else if (time === '05:00' || time === '15:00') {
       text = 'Time to relax💤';
     }
     document.title = `${time} - ${text}`;
@@ -107,8 +111,8 @@ export default function Timer() {
 
   return (
     <div
-      className="container mx-auto my-10 flex w-1/3 min-w-max flex-col	
-      items-center justify-center rounded-lg bg-card shadow-lg"
+      className="container mx-auto my-10 flex h-96 w-1/3 min-w-max	
+      flex-col items-center justify-center rounded-lg bg-card shadow-lg"
     >
       <div className="mx-5 flex flex-row items-center justify-center space-x-5">
         <button className={buttonStyle} onClick={(e) => pomo(e)}>
