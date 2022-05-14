@@ -6,6 +6,7 @@ export default function Timer() {
   const [isRunning, setIsRunning] = useState(false);
   const [buttonState, setButtonState] = useState('pomodoro');
   const [timeID, setTimeID] = useState(null);
+  const [audio, setAudio] = useState(null);
 
   const buttonStyle =
     'rounded mt-5 text-black px-3 py-1 bg-btn space-x-5 active:bg-btnactive font-inter';
@@ -16,6 +17,7 @@ export default function Timer() {
       alert('Please STOP the timer before changing the state');
       return;
     }
+    audio.play();
     if (time === undefined) {
       setTime('25:00');
     } else if (time === '25:00') {
@@ -32,6 +34,7 @@ export default function Timer() {
       alert('Please STOP the timer before changing the state');
       return;
     }
+    audio.play();
     setTime('05:00');
     setButtonState('shortBreak');
   }
@@ -42,14 +45,20 @@ export default function Timer() {
       alert('Please STOP the timer before changing the state');
       return;
     }
+    audio.play();
     setTime('15:00');
     setButtonState('longBreak');
   }
 
   function buttonClick(e) {
     e.preventDefault();
+    audio.play();
     setIsRunning(!isRunning);
   }
+
+  useEffect(() => {
+    setAudio(new Audio('./audios/button-press.wav'));
+  }, []);
 
   useEffect(() => {
     let text = 'Pomodoro';
@@ -75,6 +84,7 @@ export default function Timer() {
             minutes--;
           } else {
             setIsRunning(false);
+            setAudio(new Audio('./audios/complete.mp3'));
             return;
           }
         } else {
@@ -96,6 +106,8 @@ export default function Timer() {
       setButtonText('START');
       if (timeID !== null) {
         clearInterval(timeID);
+        audio.play();
+        setAudio(new Audio('./audios/button-press.wav'));
         setTimeID(null);
       }
       if (buttonState === 'pomodoro') {
@@ -106,31 +118,30 @@ export default function Timer() {
         setTime('15:00');
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRunning]);
 
   return (
     <div
-      className="container mx-auto my-10 flex h-96 w-1/3 min-w-max	
-      flex-col items-center justify-center rounded-lg bg-card shadow-lg"
+      className='container mx-auto my-10 flex h-96 w-1/3 min-w-max	
+      flex-col items-center justify-center rounded-lg bg-card shadow-lg'
     >
-      <div className="mx-5 flex flex-row items-center justify-center space-x-5">
-        <button className={buttonStyle} onClick={(e) => pomo(e)}>
+      <div className='mx-5 flex flex-row items-center justify-center space-x-5'>
+        <button className={buttonStyle} onClick={e => pomo(e)}>
           Pomodoro
         </button>
-        <button className={buttonStyle} onClick={(e) => shortBreak(e)}>
+        <button className={buttonStyle} onClick={e => shortBreak(e)}>
           Short Break
         </button>
-        <button className={buttonStyle} onClick={(e) => longBreak(e)}>
+        <button className={buttonStyle} onClick={e => longBreak(e)}>
           Long Break
         </button>
       </div>
-      <p className="border-gray-900 mt-10 rounded-lg py-3 px-6 font-ds text-6xl">
+      <p className='border-gray-900 mt-10 rounded-lg py-3 px-6 font-ds text-6xl'>
         {time}
       </p>
       <button
-        className="text-red-600 mt-10 mb-10 rounded bg-bigbtn py-3 px-6 font-inter font-bold text-textwhite shadow-inner active:bg-btnactive"
-        onClick={(e) => buttonClick(e)}
+        className='text-red-600 mt-10 mb-10 rounded bg-bigbtn py-3 px-6 font-inter font-bold text-textwhite shadow-inner active:bg-btnactive'
+        onClick={e => buttonClick(e)}
       >
         {buttonText}
       </button>
