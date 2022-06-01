@@ -5,6 +5,7 @@ import Nav from '../components/nav';
 import Timer from '../components/timer';
 import Results from './results';
 
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-bgred">

@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'DS-Digital';
-  src: url('../fonts/DS-DIGI.woff') format('woff');
+  font-family: 'digital-7';
+  src: url('../fonts/digital-7.mono.woff') format('woff');
 }
 
 @font-face {
   font-family: 'Inter';
   src: url('../fonts/Inter-roman-latin.var.woff2') format('woff2'),
-    url('../fonts/Inter-italic-latin.var.woff2') format('woff');
+    url('../fonts/Inter-italic-latin.var.woff2') format('woff2');
 }

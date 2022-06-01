@@ -24,7 +24,7 @@ module.exports = {
     extend: {
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
-        ds: ['DS-Digital', 'sans-serif'],
+        ds: ['digital-7', 'sans-mono'],
       },
     },
     plugins: [],
