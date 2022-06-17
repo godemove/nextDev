@@ -11,8 +11,7 @@ export default function Home() {
     <div className="min-h-screen bg-bgred">
       <Head>
         <title>Home</title>
-        <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="Home" key="title" />
+        <link rel="icon" href="tomato-128.png" />
       </Head>
       <Nav />
       <Timer />
