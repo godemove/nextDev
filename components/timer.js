@@ -52,6 +52,7 @@ export default function Timer() {
     e.preventDefault();
     audio.play();
     setIsRunning(!isRunning);
+    setAudio(new Audio('/audios/complete.wav'));
   }
 
   useEffect(() => {
@@ -66,9 +67,14 @@ export default function Timer() {
 
   useEffect(() => {
     if (localStorage.getItem('pomoResult') == null) {
+      localStorage.setItem('pomoResult', 0);
+    } else {
       localStorage.setItem('pomoResult', pomoResult);
     }
+
     if (localStorage.getItem('breakResult') == null) {
+      localStorage.setItem('breakResult', 0);
+    } else {
       localStorage.setItem('breakResult', breakResult);
     }
     console.log(pomoResult, typeof pomoResult, breakResult, typeof breakResult);
@@ -82,16 +88,17 @@ export default function Timer() {
       let startTime = new Date().getTime();
       let count = 0;
       setButtonText('STOP');
-      setAudio(new Audio('./audios/complete.mp3'));
-      let totalSec = parseInt(time.split(':')[0]) * 60;
-      let finalTime = startTime + totalSec * 1000;
+      let totalSec =
+        parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
+      // let finalTime = startTime + totalSec * 1000;
 
       function fixed() {
+        console.log(audio);
         count++;
         totalSec--;
         let minutes = Math.floor(totalSec / 60);
         let seconds = totalSec % 60;
-        if (totalSec < 0) {
+        if (totalSec === 0) {
           audio.play();
           if (buttonState === 'littlePomo') {
             setPomoResult(pomoResult + 1);
@@ -126,8 +133,9 @@ export default function Timer() {
     } else {
       window.onbeforeunload = null;
       setButtonText('START');
-      clearTimeout(timeId);
-      // console.log('[isRunning] ' + isRunning);
+      if (timeId !== null) {
+        clearTimeout(timeId);
+      }
       setAudio(new Audio('./audios/button-press.wav'));
       if (buttonState === 'littlePomo' || buttonState === null) {
         setTime('25:00');
