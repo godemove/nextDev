@@ -16,9 +16,9 @@ export default function Nav() {
   }, [href]);
 
   return (
-    <div className="mx-auto flex w-max min-w-max items-center pt-5">
-      <Image src={iconPic} alt="icon" width={30} height={30} />
-      <div id="title" className="pl-2 text-3xl font-bold text-textwhite">
+    <div className='mx-auto flex w-max min-w-max items-center pt-5'>
+      <Image src={iconPic} alt='icon' width={30} height={30} />
+      <div id='title' className='pl-2 text-3xl font-bold text-textwhite'>
         <Link href={href} replace>
           Pomodoro
         </Link>

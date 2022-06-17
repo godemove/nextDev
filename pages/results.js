@@ -34,7 +34,10 @@ export default function Results({ pomoResult_, breakResult_ }) {
         <meta property='og:title' content='Results' key='title' />
       </Head>
       <Nav />
-      <div className='container my-10 mx-auto flex h-96 w-1/3 flex-col items-center rounded-lg bg-card pt-5 shadow-lg	'>
+      <div
+        className='container my-10 mx-auto flex h-96 w-1/3 flex-col 
+      items-center rounded-lg bg-card pt-5 shadow-lg	'
+      >
         <div className='mx-5 py-2 text-center text-xl text-textwhite'>
           You&apos;ve been focused for {pomoResult} and relaxed for{' '}
           {breakResult}.

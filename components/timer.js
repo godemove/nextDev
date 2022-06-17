@@ -5,14 +5,10 @@ export default function Timer() {
   const [buttonText, setButtonText] = useState(null); // 'Start' or 'Stop'
   const [isRunning, setIsRunning] = useState(false); // is pomo running? true or false
   const [buttonState, setButtonState] = useState(null); // 'bigPomo' or 'littlePomo' or 'shortBreak' or 'longBreak'
-  const [timeID, setTimeID] = useState(null); // setInterval() returns a number, so we need to store it in a variable
   const [audio, setAudio] = useState(null); // set the audio url in a variable
+  const [timeId, setTimeId] = useState(null); // set the timeId in a variable
   const [pomoResult, setPomoResult] = useState(0); // store the pomo result in a variable, 1 unit = 25 minutes
   const [breakResult, setBreakResult] = useState(0); // store the break result in a variable, 1 unit = 5 minutes
-
-  console.log('NODE_VERSION:', process.env.NEXT_PUBLIC_NODE_VERSION);
-  console.log('NODE_ENV:', process.env.NEXT_PUBLIC_NODE_ENV);
-  console.log('AUTH_TOKEN:', process.env.AUTH_TOKEN);
 
   function pomo(e) {
     e.preventDefault();
@@ -59,10 +55,6 @@ export default function Timer() {
   }
 
   useEffect(() => {
-    setAudio(new Audio('./audios/button-press.wav'));
-  }, []);
-
-  useEffect(() => {
     let text = 'Pomodoro🍅';
     if (time === '25:00' || time === '50:00') {
       text = 'Time to focus💪';
@@ -73,89 +65,73 @@ export default function Timer() {
   }, [time]);
 
   useEffect(() => {
-    if (localStorage.getItem('pomoResult') !== null) {
+    if (localStorage.getItem('pomoResult') == null) {
       localStorage.setItem('pomoResult', pomoResult);
     }
-    if (localStorage.getItem('breakResult') !== null) {
+    if (localStorage.getItem('breakResult') == null) {
       localStorage.setItem('breakResult', breakResult);
     }
-    // let _date = new Date().toISOString().slice(0, 10);
-    // if (pomoResult !== null && breakResult !== null) {
-    //   fetch('https://pomo.linuxconsole.ml/worker', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       date: _date,
-    //       pomo: pomoResult,
-    //       breaks: breakResult,
-    //       auth: process.env.AUTH_TOKEN,
-    //     }),
-    //     mode: 'no-cors',
-    //   })
-    //     .then(() => {
-    //       console.log('sent to server');
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // }
     console.log(pomoResult, typeof pomoResult, breakResult, typeof breakResult);
   }, [pomoResult, breakResult]);
 
   useEffect(() => {
     if (isRunning) {
+      window.onbeforeunload = () => {
+        return 'Are you sure you want to leave?';
+      };
+      let startTime = new Date().getTime();
+      let count = 0;
       setButtonText('STOP');
-      let [minutes, seconds] = time.split(':');
-      seconds = Number(seconds);
-      minutes = Number(minutes);
+      setAudio(new Audio('./audios/complete.mp3'));
+      let totalSec = parseInt(time.split(':')[0]) * 60;
+      let finalTime = startTime + totalSec * 1000;
 
-      const id = setInterval(() => {
-        if (seconds === 0) {
-          seconds = 59;
-          if (minutes !== 0) {
-            minutes--;
-          } else {
-            setAudio(new Audio('./audios/complete.mp3'));
-            if (buttonState === 'littlePomo') {
-              setPomoResult(pomoResult + 1);
-            } else if (buttonState === 'bigPomo') {
-              setPomoResult(pomoResult + 2);
-            } else if (buttonState === 'shortBreak') {
-              setBreakResult(breakResult + 1);
-            } else if (buttonState === 'longBreak') {
-              setBreakResult(breakResult + 3);
-            }
-            setIsRunning(false);
-            return;
+      function fixed() {
+        count++;
+        totalSec--;
+        let minutes = Math.floor(totalSec / 60);
+        let seconds = totalSec % 60;
+        if (totalSec < 0) {
+          audio.play();
+          if (buttonState === 'littlePomo') {
+            setPomoResult(pomoResult + 1);
+          } else if (buttonState === 'bigPomo') {
+            setPomoResult(pomoResult + 2);
+          } else if (buttonState === 'shortBreak') {
+            setBreakResult(breakResult + 1);
+          } else if (buttonState === 'longBreak') {
+            setBreakResult(breakResult + 3);
           }
-        } else {
-          seconds -= 1;
+          setIsRunning(false);
+          clearTimeout(timeId);
+          // console.log('cleared', finalTime, new Date().getTime());
+          return;
         }
-        let textSeconds = seconds;
-        let textMinutes = minutes;
         if (seconds < 10) {
-          textSeconds = `0${seconds}`;
+          seconds = `0${seconds}`;
         }
         if (minutes < 10) {
-          textMinutes = `0${minutes}`;
+          minutes = `0${minutes}`;
         }
-        setTime(`${textMinutes}:${textSeconds}`);
-      }, 1000);
-      setTimeID(id);
-    }
-    if (!isRunning) {
-      setButtonText('START');
-      if (timeID !== null) {
-        clearInterval(timeID);
-        audio.play();
-        setAudio(new Audio('./audios/button-press.wav'));
-        setTimeID(null);
+        setTime(`${minutes}:${seconds}`);
+        let offset = new Date().getTime() - (startTime + count * 1000);
+        let nextTime = 1000 - offset;
+        if (nextTime < 0) {
+          nextTime = 0;
+        }
+        // console.log(isRunning, offset, nextTime, minutes, seconds, totalSec);
+        setTimeId(setTimeout(fixed, nextTime));
       }
+      setTimeId(setTimeout(fixed, 1000));
+    } else {
+      window.onbeforeunload = null;
+      setButtonText('START');
+      clearTimeout(timeId);
+      // console.log('[isRunning] ' + isRunning);
+      setAudio(new Audio('./audios/button-press.wav'));
       if (buttonState === 'littlePomo' || buttonState === null) {
         setTime('25:00');
-      } else if (buttonState === '') {
+      } else if (buttonState === 'bigPomo') {
         setTime('50:00');
       } else if (buttonState === 'shortBreak') {
         setTime('05:00');
