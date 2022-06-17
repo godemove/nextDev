@@ -7,8 +7,8 @@ export default function Timer() {
   const [buttonState, setButtonState] = useState(null); // 'bigPomo' or 'littlePomo' or 'shortBreak' or 'longBreak'
   const [audio, setAudio] = useState(null); // set the audio url in a variable
   const [timeId, setTimeId] = useState(null); // set the timeId in a variable
-  const [pomoResult, setPomoResult] = useState(0); // store the pomo result in a variable, 1 unit = 25 minutes
-  const [breakResult, setBreakResult] = useState(0); // store the break result in a variable, 1 unit = 5 minutes
+  const [pomoResult, setPomoResult] = useState(null); // store the pomo result in a variable, 1 unit = 25 minutes
+  const [breakResult, setBreakResult] = useState(null); // store the break result in a variable, 1 unit = 5 minutes
 
   function pomo(e) {
     e.preventDefault();
@@ -66,18 +66,19 @@ export default function Timer() {
   }, [time]);
 
   useEffect(() => {
-    if (localStorage.getItem('pomoResult') == null) {
-      localStorage.setItem('pomoResult', 0);
+    let p = localStorage.getItem('pomoResult');
+    let b = localStorage.getItem('breakResult');
+    if (p === null) {
+      setPomoResult(0);
     } else {
-      localStorage.setItem('pomoResult', pomoResult);
+      setPomoResult(p);
     }
-
-    if (localStorage.getItem('breakResult') == null) {
-      localStorage.setItem('breakResult', 0);
+    if (b === null) {
+      setBreakResult(0);
     } else {
-      localStorage.setItem('breakResult', breakResult);
+      setBreakResult(b);
     }
-    console.log(pomoResult, typeof pomoResult, breakResult, typeof breakResult);
+    console.log(pomoResult, breakResult);
   }, [pomoResult, breakResult]);
 
   useEffect(() => {
@@ -101,13 +102,21 @@ export default function Timer() {
         if (totalSec === 0) {
           audio.play();
           if (buttonState === 'littlePomo') {
-            setPomoResult(pomoResult + 1);
+            // setPomoResult(pomoResult + 1);
+            localStorage.setItem('pomoResult', parseInt(pomoResult) + 1);
+            setPomoResult(parseInt(pomoResult) + 1);
           } else if (buttonState === 'bigPomo') {
-            setPomoResult(pomoResult + 2);
+            // setPomoResult(pomoResult + 2);
+            localStorage.setItem('pomoResult', parseInt(pomoResult) + 2);
+            setPomoResult(parseInt(pomoResult) + 2);
           } else if (buttonState === 'shortBreak') {
-            setBreakResult(breakResult + 1);
+            // setBreakResult(breakResult + 1);
+            localStorage.setItem('breakResult', parseInt(breakResult) + 1);
+            setBreakResult(parseInt(breakResult) + 1);
           } else if (buttonState === 'longBreak') {
-            setBreakResult(breakResult + 3);
+            // setBreakResult(breakResult + 3);
+            localStorage.setItem('breakResult', parseInt(breakResult) + 3);
+            setBreakResult(parseInt(breakResult) + 3);
           }
           setIsRunning(false);
           clearTimeout(timeId);

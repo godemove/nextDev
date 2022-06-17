@@ -5,13 +5,12 @@ import Nav from '../components/nav';
 import Timer from '../components/timer';
 import Results from './results';
 
-
 export default function Home() {
   return (
-    <div className="min-h-screen bg-bgred">
+    <div className='min-h-screen bg-bgred dark:bg-darkbg'>
       <Head>
         <title>Home</title>
-        <link rel="icon" href="tomato-128.png" />
+        <link rel='icon' href='tomato-128.png' />
       </Head>
       <Nav />
       <Timer />
