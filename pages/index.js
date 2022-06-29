@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 
 import Nav from '../components/nav';
 import Timer from '../components/timer';
-import Results from './results';
+// import Results from './results';
 
 export default function Home() {
   return (
